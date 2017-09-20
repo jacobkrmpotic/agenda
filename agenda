@@ -1,0 +1,127 @@
+#!/bin/python3
+
+import sys
+from time import time
+from getpass import getuser
+
+user = getuser()
+if (user == "root"):
+	print("It is not recommended to run this program as root.")
+	print("An agenda file has been created for the root user; /root/.agenda")
+	agenda_file = "/root/.agenda"
+else:
+	agenda_file = "/home/" + user + "/.agenda"
+
+
+# read /home/user/.agenda file, create if non-existant
+try:
+	f = open(agenda_file, "r")
+	text = f.read()
+	f.close()
+except FileNotFoundError:
+	print("File: %s created" % agenda_file)
+	f = open(agenda_file, "x")
+	text = ""
+	f.close()
+
+# remove blank lines
+while (text.find("\n\n") > -1):
+	text = text.replace("\n\n", "\n")
+# convert to list
+tasks = text.split("\n")
+
+# if user added newline at end, remove it
+if (tasks[-1] == ""):
+	tasks.pop()
+
+
+
+# takes the current time in seconds and a past time in seconds (int)
+# then returns a regular string like "5 seconds ago", "2 weeks ago", etc.
+def time_ago(current, past):
+	if (past > current): # if the variables are mixed up
+		current, past = past, current
+
+	t = int(current - past)
+	if (t // 315360000 > 0):
+		t //= 315360000
+		st = "decades"
+		if (t == 1): st = "decade"
+		return "%d %s ago" % (t, st)
+	elif (t // 31536000 > 0):
+		t //= 31536000
+		st = "years"
+		if (t == 1): st = "year"
+		return "%d %s ago" % (t, st)
+	elif (t // 2592000 > 0):
+		 t //= 2592000
+		 st = "months"
+		 if (t == 1): st = "month"
+		 return "%d %s ago" % (t, st)
+	elif (t // 604800 >	0):
+		t //= 604800
+		st = "weeks"
+		if (t == 1): st = "week"
+		return "%d %s ago" % (t, st)
+	elif (t // 86400 > 0):
+		t //= 86400
+		st = "days"
+		if (t == 1): st = "day"
+		return "%d %s ago" % (t, st)
+	elif (t // 3600 > 0):
+		t //= 3600
+		st = "hours"
+		if (t == 1): st = "hour"
+		return "%d %s ago" % (t, st)
+	elif (t // 60 > 0):
+		t //= 60
+		st = "minutes"
+		if (t == 1): st = "minute"
+		return "%d %s ago" % (t, st)
+	elif (t // 4 > 0):
+		return "%d seconds ago" % t
+	return "just now"
+
+def printhelp():
+	print("Usage: agenda <command> [parameter]")
+	print("Commands:")
+	print("pop\tNo parameters, removes last task.")
+	print("add\tAdd a task.")
+	print("remove\tRemove one or several tasks by their indices.")
+	print("clear\tClear all tasks.")
+	print("swap\tSwap two tasks by their indices.")
+	print("combine\tCombine two tasks into one by their indices")
+	print("color\tChange the color of the task.")
+	print("\tcolors: red, blue, green, etc.")
+	print("\tTo remove a color, set its color to 'default'")
+
+
+# if no other arguments are specified...
+if (len(sys.argv) == 1):
+	if (len(tasks) == 1):
+		print("You have 1 task on your agenda.")
+	else:
+		print("You have %d tasks on your agenda." % (len(tasks)))
+
+	print("No. Task Age          Task")
+	x = 0
+	while (x < len(tasks)):
+		flag = tasks[x].find(":") # find delimitter
+		date_s = int(tasks[x][0:flag]) # get time in seconds
+		task = tasks[x][flag+1:] # format task string
+		past_time = time_ago(time(), date_s) + ":" # format time passed
+		while (len(past_time) + 4 != 22): # align tasks
+			past_time += " "
+		print("%2d. %s%s" % (x+1, past_time, task))
+		x += 1
+
+# if user specified a command that has no parameters...
+if (len(sys.argv) == 2):
+	arg = sys.argv[1]
+	if (arg == "help" or arg == "-h" or arg == "--help"):
+		printhelp()
+	elif (arg == "pop"):
+		tasks.pop()
+	elif (arg == "clear"):
+		while (len(tasks) != 0):
+			tasks.pop()
