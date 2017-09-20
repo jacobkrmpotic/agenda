@@ -95,9 +95,11 @@ def printhelp():
 	print("\tcolors: red, blue, green, etc.")
 	print("\tTo remove a color, set its color to 'default'")
 
+# argument count
+argc = len(sys.argv)
 
 # if no other arguments are specified...
-if (len(sys.argv) == 1):
+if (argc == 1):
 	if (len(tasks) == 1):
 		print("You have 1 task on your agenda.")
 	else:
@@ -116,12 +118,23 @@ if (len(sys.argv) == 1):
 		x += 1
 
 # if user specified a command that has no parameters...
-if (len(sys.argv) == 2):
-	arg = sys.argv[1]
-	if (arg == "help" or arg == "-h" or arg == "--help"):
-		printhelp()
-	elif (arg == "pop"):
-		tasks.pop()
-	elif (arg == "clear"):
-		while (len(tasks) != 0):
-			tasks.pop()
+if (argc == 2):
+    arg = sys.argv[1]
+    if (arg == "help" or arg == "-h" or arg == "--help"):
+        printhelp()
+    elif (arg == "pop"):
+        tasks.pop()
+    elif (arg == "clear"):
+        while (len(tasks) != 0):
+            tasks.pop()
+
+if (argc > 2):
+    command = sys.argv[1]
+    params = sys.argv[2:]
+    if (command == "swap"):
+        a = int(params[0]) - 1
+        b = int(params[1]) - 1
+        try:
+            tasks[a], tasks[b] = tasks[b], tasks[a]
+        except IndexError:
+            print("Failed to swap tasks, an index was not found.")
