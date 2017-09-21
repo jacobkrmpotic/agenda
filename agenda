@@ -83,39 +83,40 @@ def time_ago(current, past):
 	return "just now"
 
 def printhelp():
-	print("Usage: agenda <command> [parameter]")
-	print("Commands:")
-	print("pop\tNo parameters, removes last task.")
-	print("add\tAdd a task.")
-	print("remove\tRemove one or several tasks by their indices.")
-	print("clear\tClear all tasks.")
-	print("swap\tSwap two tasks by their indices.")
-	print("combine\tCombine two tasks into one by their indices")
-	print("color\tChange the color of the task.")
-	print("\tcolors: red, blue, green, etc.")
-	print("\tTo remove a color, set its color to 'default'")
+    print("Usage: agenda <command> [parameter]")
+    print("Run agenda alone to view the tasklist.")
+    print("Commands:")
+    print("pop\tNo parameters, removes last task.")
+    print("add\tAdd a task.")
+    print("remove\tRemove one or several tasks by their indices.")
+    print("clear\tClear all tasks.")
+    print("swap\tSwap two tasks by their indices.")
+    print("combine\tCombine two tasks into one by their indices")
+    print("color\tChange the color of the task.")
+    print("\tcolors: red, blue, green, etc.")
+    print("\tTo remove a color, set its color to 'default'")
 
 # argument count
 argc = len(sys.argv)
 
-# if no other arguments are specified...
+# if no other arguments are specified print tasks
 if (argc == 1):
-	if (len(tasks) == 1):
-		print("You have 1 task on your agenda.")
-	else:
-		print("You have %d tasks on your agenda." % (len(tasks)))
+    if (len(tasks) == 1):
+        print("You have 1 task on your agenda.")
+    else:
+        print("You have %d tasks on your agenda." % (len(tasks)))
 
-	print("No. Task Age          Task")
-	x = 0
-	while (x < len(tasks)):
-		flag = tasks[x].find(":") # find delimitter
-		date_s = int(tasks[x][0:flag]) # get time in seconds
-		task = tasks[x][flag+1:] # format task string
-		past_time = time_ago(time(), date_s) + ":" # format time passed
-		while (len(past_time) + 4 != 22): # align tasks
-			past_time += " "
-		print("%2d. %s%s" % (x+1, past_time, task))
-		x += 1
+    print("No. Task Age          Task")
+    x = 0
+    while (x < len(tasks)):
+        flag = tasks[x].find(":") # find delimitter
+        date_s = int(tasks[x][0:flag]) # get time in seconds
+        task = tasks[x][flag+1:] # format task string
+        past_time = time_ago(time(), date_s) + ":" # format time passed
+        while (len(past_time) + 4 != 22): # align tasks
+            past_time += " "
+        print("%2d. %s%s" % (x+1, past_time, task))
+        x += 1
 
 # if user specified a command that has no parameters...
 if (argc == 2):
@@ -138,3 +139,19 @@ if (argc > 2):
             tasks[a], tasks[b] = tasks[b], tasks[a]
         except IndexError:
             print("Failed to swap tasks, an index was not found.")
+    if (command == "add"):
+        # convert params into string (if user didn't user quotes)
+        new_task = ""
+        for x in params:
+            new_task += (x + " ")
+        new_task = new_task[0:-1] # remove extra space
+        tasks.append(str(int(time())) + ":" + new_task)
+
+# write tasks to file
+f = open(agenda_file, "w")
+string = ""
+for x in tasks:
+    string += (x + "\n")
+string = string[0:-1] # remove last new line
+f.write(string)
+f.close()
