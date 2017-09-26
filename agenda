@@ -130,9 +130,13 @@ def puttasks(tasks):
 		date_s = int(tasks[x][0:flag]) # get time in seconds
 		task = tasks[x][flag+1:] # format task string
 		past_time = time_ago(time(), date_s) + ":" # format time passed
-		while (len(past_time) + 4 != 20): # align tasks
+
+		# align tasks by adding spaces to a common distance
+		while (len(past_time) + 4 != 20):
 			past_time += " "
-		print("%2d. %s%s" % (x+1, past_time, task))
+
+		# print formatted and return term to normal style
+		print("%2d. %s%s \033[0;39;49m" % (x+1, past_time, task))
 		x += 1
 
 # argument count
