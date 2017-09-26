@@ -5,8 +5,8 @@ Simple CLI task manager written in python.
 
 Your agenda file is stored at ~/.agenda
 
-## Installation
-===============
+Installation
+-----------------
 There are many ways to get a script and make it quickly accessible,
 but this is usually how I do it. 
 
@@ -32,8 +32,11 @@ directory, you can alias it in your shell's rc as so...
 
 ~/.zshrc or ~/.bashrc
 ---------------------
+
 ...
+
 `alias agenda="python3 /path/to/agenda"`
+
 ...
 
 Basic Usage
