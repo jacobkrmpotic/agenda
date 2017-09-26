@@ -3,7 +3,10 @@ Simple CLI task manager written in python.
 
 # ![Preview](http://pastein.space/fichi/preview.jpg)
 
-Your agenda file is stored at ~/.agenda
+__Last updated September 25th, 2017.__
+
+Please note that this is something I scratched up in an hour after
+thinking of it and that the code may be messy because of that.
 
 Installation
 -----------------
@@ -14,6 +17,10 @@ but this is usually how I do it.
 2. `cd agenda`
 3. `sudo chmod +x agenda`
 4. `sudo ln -s /path/to/agenda /usr/local/bin/agenda`
+
+__Your agenda file (that contains your tasklist) is stored at ~/.agenda.__
+Though it can be edited manually, I'd advise against it as `agenda`
+doesn't account for syntax errors.
 
 *And to uninstall...*
 
