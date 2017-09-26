@@ -105,6 +105,8 @@ def printhelp():
 	print("\tbold, italic, underline, normal, none, blink")
 	print("\tColors:")
 	print("\tblack, red, green, yellow, blue, purple, cyan and white")
+	print("unstyle - Revert style of task(s) to default.")
+	print("\ti.e agenda unstyle 4 5")
 
 def puttasks(tasks):
 	if (len(tasks) == 0):
@@ -131,9 +133,10 @@ def puttasks(tasks):
 # argument count
 argc = len(sys.argv)
 
-# if no other arguments are specified; print tasks
+# if no other arguments are specified; print tasks and end
 if (argc == 1):
 	puttasks(tasks)
+    exit()
 
 # if user specified a command that has no parameters...
 if (argc == 2):
@@ -142,40 +145,54 @@ if (argc == 2):
 	# it easier for those that have just installed  the program
 	if (arg == "help" or arg == "-h" or arg == "--help"):
 		printhelp()
-	elif (arg == "pop"): # remove the last task
+	# remove the last task in the task list
+	elif (arg == "pop"):
 		print("Removed task %d." % (len(tasks)))
 		tasks.pop()
 		puttasks(tasks)
-	elif (arg == "clear"): # remove every single task
+	# remove every single task
+	elif (arg == "clear"):
 		print("Agenda cleard, removed %d tasks." % (len(tasks)))
 		while (len(tasks) != 0):
 			tasks.pop()
 		puttasks(tasks)
+	# unknown command specified
 	else:
 		print("Command not recognized. Try: agenda help")
 
 # user specified a command with parameters
 if (argc > 2):
+	# set command
 	command = sys.argv[1].lower()
+	# set parameters
 	params = sys.argv[2:]
+
+	# swap 2 different tasks positions
 	if (command == "swap"):
 		a = int(params[0]) - 1
 		b = int(params[1]) - 1
+		# swap, making sure valid indices were specified
 		try:
 			tasks[a], tasks[b] = tasks[b], tasks[a]
 		except IndexError:
 			print("Failed to swap tasks, an index was not found.")
 		puttasks(tasks)
+	# add task to task list
 	elif (command == "add"):
 		# convert params into string (if user didn't user quotes)
 		new_task = ""
-		for x in params:
+		for x in params: # insert spaces
 			new_task += (x + " ")
 		new_task = new_task[0:-1] # remove extra space
+
+		# add task to list among current time
 		tasks.append(str(int(time())) + ":" + new_task)
+		# print tasks
 		puttasks(tasks)
+	# remove one or more tasks by their indices
 	elif (command == "remove" or command == "rm" or command == "del"):
 		s = 0
+		# convert all indices to ints that start from 0
 		while (s < len(params)):
 			try:
 				params[s] = int(params[s]) - 1
@@ -183,14 +200,18 @@ if (argc > 2):
 				print("Invalid index specified.")
 				exit()
 			s += 1
+		# mark tasks for deletion while error checking
 		for x in params:
 			try:
 				tasks[x] = "<del>"
 			except IndexError:
 				print("Failed to delete task %d." % (x))
+		# remove tasks
 		while ("<del>" in tasks):
 			tasks.remove("<del>")
+		# print tasks
 		puttasks(tasks)
+	# edit a task
 	elif (command == "edit"):
 		ind = 0
 		try: # check if valid index specified
@@ -213,8 +234,10 @@ if (argc > 2):
 		if (flag == -1):
 			print("agenda file may be corrupt, ignoring...")
 
-		tasks[ind] = str(int(time())) + ":" + tasks[ind][flag+1:flag+11] + task # edit task
+		# edit task
+		tasks[ind] = str(int(time())) + ":" + tasks[ind][flag+1:flag+11] + task
 		puttasks(tasks) # print tasks
+	# stylize a task
 	elif (command == "style"):
 		# Make sure user specified enough parameters
 		if (len(params) < 1):
@@ -225,10 +248,10 @@ if (argc > 2):
 			exit()
 
 		# user didnt specify text or background color
+		# add default colors of black and white
 		if (len(params) == 2):
 			params.append("white")
 			params.append("black")
-
 		# user didnt specify background color
 		if (len(params) == 3):
 			params.append("black")
@@ -262,7 +285,9 @@ if (argc > 2):
 			print("Text style '%s' was not recognized, exited." % params[1])
 			exit()
 
+		# lower case for comparison
 		params[2] = params[2].lower()
+
 		# set text color
 		if params[2] == "black":
 			params[2] = "30"
@@ -281,11 +306,14 @@ if (argc > 2):
 		elif params[2] == "white":
 			params[2] = "37" # text color is white
 		else:
+			# unknown color specified
 			print("Failed to stylize, text color '%s' was not recognized,"
 				+ "exited." % params[2])
 			exit()
 
+		# lower case for comparison
 		params[3] = params[3].lower()
+
 		# set background color
 		if params[3] == "black":
 			params[3] = "40"
@@ -322,6 +350,7 @@ if (argc > 2):
 		else:
 			tasks[ind] = tasks[ind][:flag+1] + color_form + tasks[ind][flag+1:]
 		puttasks(tasks)
+	# set task back to default colors
 	elif (command == "unstyle"):
 		# user specified at least 1 param
 		if (len(params) < 1):
@@ -342,6 +371,7 @@ if (argc > 2):
 				print("Failed to remove style, a specified index is out of range.")
 				exit()
 
+		# write task(s) without style
 		failures = False
 		for n in indices:
 			flag = tasks[n].find(":")

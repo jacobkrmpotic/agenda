@@ -43,6 +43,10 @@ Basic Usage
 
 `agenda`
 
+One simply calls `agenda` itself. Calling agenda with an arugment will
+also print out your tasklist after the modifications have been made
+regardless.
+
 **Adding event, 'hello world', to our agenda.**
 
 `agenda add hello world`
@@ -58,19 +62,23 @@ Our tasklist now looks like:
 
 **Stylizing our first task.**
 
-`agenda style 1 italic black white
+`agenda style 1 italic black white`
 
 The order here matters, the form for the `agenda style` command is as follows:
 
-agenda style [index] [text-decoration] <text-color> <text-highlight>
+`agenda style [index] [text-decoration] <text-color> <text-highlight>`
 
 To remove the italics one would:
 
 `agenda style 1 normal black white`
 
+**Removing the style for tasks 4 and 5.**
+
+`agenda unstyle 4 5`
+
 **Swapping the second and third tasks.**
 
-`agenda swap 2 3
+`agenda swap 2 3`
 
 **Removing the last task on our agenda, regardless of number of tasks.**
 
