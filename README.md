@@ -32,12 +32,12 @@ directory, you can alias it in your shell's rc as so...
 ~/.zshrc or ~/.bashrc
 ---------------------
 ...
-alias agenda="python3 /path/to/agenda"
+`alias agenda="python3 /path/to/agenda"`
 ...
 
 Basic Usage
 ----------------
-#### _Through examples_
+##### _Through examples_
 
 **Listing the tasks in our agenda.**
 
@@ -68,9 +68,27 @@ The order here matters, the form for the `agenda style` command is as follows:
 
 `agenda style [index] [text-decoration] <text-color> <text-highlight>`
 
-To remove the italics one would:
+To remove the italics and make the text red on green, one would:
 
-`agenda style 1 normal black white`
+`agenda style default red green`
+
+The available text decorations are:
+-blink
+-italic
+-bold
+-normal/default/none
+-underline
+
+And the available text/background colors are:
+-red
+-blue
+-green
+-cyan
+-yellow
+-purple
+-black
+-white
+-default
 
 **Removing the style for tasks 4 and 5.**
 
