@@ -1,6 +1,8 @@
 # agenda
 Simple CLI task manager written in python.
 
+# ![Preview](http://pastein.space/fichi/preview.jpg)
+
 Your agenda file is stored at ~/.agenda
 
 ## Installation
@@ -26,7 +28,6 @@ python3 agenda ...
 
 and instead of adding it to your /usr/local/bin 
 directory, you can alias it in your shell's rc as so...
-
 
 
 ~/.zshrc or ~/.bashrc
