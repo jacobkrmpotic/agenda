@@ -4,6 +4,9 @@ import sys
 from time import time
 from getpass import getuser
 
+# set default terminal colour
+native = '\033[m'
+
 user = getuser()
 if (user == "root"):
 	print("It is not recommended to run this program as root.")
@@ -101,26 +104,28 @@ def printhelp():
 	print("\tform agenda style <index #> <style> <text color> <background color>")
 	print("\tThe following will change a tasks style to red text on black.")
 	print("\tagenda style 5 normal red black")
-	print("\tStyles (none and normal are the same):")
+	print("\tStyles (none, default and normal are the same):")
 	print("\tbold, italic, underline, normal, none, blink")
 	print("\tColors:")
-	print("\tblack, red, green, yellow, blue, purple, cyan and white")
+	print("\tdefault, black, red, green, yellow, blue, purple, cyan and white")
 	print("unstyle - Revert style of task(s) to default.")
 	print("\ti.e agenda unstyle 4 5")
+	print("\talso possible:")
+	print("\tagenda style 4 default default default")
 
 def puttasks(tasks):
 	if (len(tasks) == 0):
 		print("You currently don't have anything on your agenda.")
 		exit()
 	elif (len(tasks) == 1):
-		print("\033[5;37;40m You have 1 task on your agenda.")
+		print("\033[4;39;49mYou have 1 task on your agenda.")
 	else:
-		print("\033[5;37;40m You have %d tasks on your agenda. \033[0;37;40m" % (len(tasks)))
+		print("\033[4;39;49mYou have %d tasks on your agenda.\033[0;39;49m" % (len(tasks)))
 
-	print("\033[1;37;40m No. Task Age		Task")
+	print("\033[1;39;49mNo. Task Age		Task")
 	x = 0
 	while (x < len(tasks)):
-		print("\033[0;37;40m", end="")
+		print("\033[0;39;49m", end="")
 		flag = tasks[x].find(":") # find delimitter
 		date_s = int(tasks[x][0:flag]) # get time in seconds
 		task = tasks[x][flag+1:] # format task string
@@ -150,18 +155,22 @@ if (argc == 2):
 		print("Removed task %d." % (len(tasks)))
 		tasks.pop()
 		puttasks(tasks)
-	# remove every single task
+	# remove every single task in the agenda
 	elif (arg == "clear"):
-		print("Agenda cleard, removed %d tasks." % (len(tasks)))
-		while (len(tasks) != 0):
-			tasks.pop()
+		print("Agenda cleared, removed %d tasks." % (len(tasks)))
+		# empty agenda file
+		del_f = open(agenda_file, "w")
+		del_f.write("")
+		del_f.close()
+
+		# delete tasks and call print on empty task list
+		tasks = []
 		puttasks(tasks)
 	# unknown command specified
 	else:
 		print("Command not recognized. Try: agenda help")
-
 # user specified a command with parameters
-if (argc > 2):
+elif (argc > 2):
 	# set command
 	command = sys.argv[1].lower()
 	# set parameters
@@ -250,11 +259,11 @@ if (argc > 2):
 		# user didnt specify text or background color
 		# add default colors of black and white
 		if (len(params) == 2):
-			params.append("white")
-			params.append("black")
+			params.append("default")
+			params.append("default")
 		# user didnt specify background color
 		if (len(params) == 3):
-			params.append("black")
+			params.append("49")
 
 		# Make sure user specified valid index
 		try:
@@ -265,13 +274,13 @@ if (argc > 2):
 
 		# if index out of range, exit
 		if (ind >= len(tasks) or ind < 0):
-			print("Failed to style task, index specified out of range .")
+			print("Failed to style task, index specified out of range.")
 			exit()
 
 		# lower case for comparison
 		params[1] = params[1].lower()
 		# set text style
-		if params[1] == "normal" or params[1] == "none":
+		if params[1] == "normal" or params[1] == "none" or params[1] == "default":
 			params[1] = "0"
 		elif params[1] == "bold":
 			params[1] = "1"
@@ -282,8 +291,7 @@ if (argc > 2):
 		elif params[1] == "blink":
 			params[1] = "5"
 		else:
-			print("Text style '%s' was not recognized, exited." % params[1])
-			exit()
+			params[1] = "0"
 
 		# lower case for comparison
 		params[2] = params[2].lower()
@@ -305,11 +313,10 @@ if (argc > 2):
 			params[2] = "36"
 		elif params[2] == "white":
 			params[2] = "37" # text color is white
+		elif params[2] == "default":
+			params[2] = "39" # default terminal color
 		else:
-			# unknown color specified
-			print("Failed to stylize, text color '%s' was not recognized,"
-				+ "exited." % params[2])
-			exit()
+			params[2] = "39" # default color
 
 		# lower case for comparison
 		params[3] = params[3].lower()
@@ -331,9 +338,10 @@ if (argc > 2):
 			params[3] = "46"
 		elif params[3] == "white":
 			params[3] = "47"
+		elif params[3] == "default":
+			params[3] = "49"
 		else:
-			print("Background color '%s' not recognized. Exited." % params[3])
-			exit()
+			params[3] = "49" # default color
 
 		color_form = "\033[%s;%s;%sm" % (params[1], params[2], params[3])
 
@@ -379,7 +387,7 @@ if (argc > 2):
 				failures = True
 			# remove style if one is there
 			if (tasks[n][flag+1:flag+3] == "\033["):
-				tasks[n] = tasks[n][:flag+1] + tasks[n][flag+12:]
+				tasks[n] = tasks[n][:flag+1] + tasks[n][flag+11:]
 			else:
 				failures = True
 
