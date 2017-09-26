@@ -136,7 +136,7 @@ argc = len(sys.argv)
 # if no other arguments are specified; print tasks and end
 if (argc == 1):
 	puttasks(tasks)
-    exit()
+	exit()
 
 # if user specified a command that has no parameters...
 if (argc == 2):
