@@ -243,12 +243,17 @@ elif (argc > 2):
 		for x in params[1:]:
 			task += (x + " ")
 		task = task[0:-1] # remove extra space at end
+
 		flag = tasks[ind].find(":")
 		if (flag == -1):
 			print("agenda file may be corrupt, ignoring...")
 
+		# grab style if there
+		style = ""
+		if (tasks[ind][flag+1:flag+3] == "\033["):
+			style = tasks[ind][flag+1:flag+11]
 		# edit task
-		tasks[ind] = str(int(time())) + ":" + tasks[ind][flag+1:flag+11] + task
+		tasks[ind] = str(int(time())) + ":" + style + task
 		puttasks(tasks) # print tasks
 	# stylize a task
 	elif (command == "style"):
