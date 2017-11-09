@@ -122,7 +122,7 @@ def puttasks(tasks):
 	else:
 		print("\033[4;39;49mYou have %d tasks on your agenda.\033[0;39;49m" % (len(tasks)))
 
-	print("\033[1;39;49mNo. Task Age		Task")
+	print("\033[1;39;49mNo. Task Age        Task")
 	x = 0
 	while (x < len(tasks)):
 		print("\033[0;39;49m", end="")
