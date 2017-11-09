@@ -4,9 +4,6 @@ import sys
 from time import time
 from getpass import getuser
 
-# set default terminal colour
-native = '\033[m'
-
 user = getuser()
 if (user == "root"):
 	print("It is not recommended to run this program as root.")
@@ -30,14 +27,10 @@ except FileNotFoundError:
 # remove blank lines
 while (text.find("\n\n") > -1):
 	text = text.replace("\n\n", "\n")
-# convert to list
-tasks = text.split("\n")
-
+tasks = text.split("\n") # divide tasks
 # if user added newline at end, remove it
 if (tasks[-1] == ""):
 	tasks.pop()
-
-
 
 # takes the current time in seconds and a past time in seconds (int)
 # then returns a regular string like "5 seconds ago", "2 weeks ago", etc.
